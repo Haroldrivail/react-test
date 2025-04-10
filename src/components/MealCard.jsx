@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import FavoriteButton from './FavoriteButton';
 
 export default function MealCard({ meal, highlightText }) {
     const navigate = useNavigate();
     const CHARACTER_LIMIT = 100;
+    const [isHovered, setIsHovered] = useState(false);
 
     const handleMealClick = () => {
         navigate(`/meal/${meal.idMeal}`);
@@ -32,12 +33,16 @@ export default function MealCard({ meal, highlightText }) {
 
     return (
         <div
-            className="max-w-sm w-full bg-gray-800 shadow-lg rounded-lg overflow-hidden mx-auto cursor-pointer transition-transform hover:scale-105 m-4"
+            className={`max-w-sm w-full bg-gray-800 shadow-lg rounded-lg overflow-hidden mx-auto cursor-pointer m-4 relative
+                transition-all duration-300 ${isHovered ? 'transform scale-105 shadow-xl' : ''}`}
             onClick={handleMealClick}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
         >
             <div className="relative">
                 <img
-                    className="w-full h-60 object-cover rounded-t-lg"
+                    className="w-full h-60 object-cover rounded-t-lg transition-transform duration-500"
+                    style={{ transform: isHovered ? 'scale(1.05)' : 'scale(1)' }}
                     src={meal.strMealThumb}
                     alt={meal.strMeal}
                 />
@@ -47,7 +52,7 @@ export default function MealCard({ meal, highlightText }) {
                             href={meal.strYoutube}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="w-10 h-10 flex items-center justify-center bg-red-600 rounded-full hover:bg-red-700 transition-colors duration-300 shadow-md"
+                            className="w-10 h-10 flex items-center justify-center bg-red-600 rounded-full hover:bg-red-700 transition-colors duration-300 shadow-md transform hover:scale-110"
                             onClick={(e) => e.stopPropagation()}
                         >
                             <svg
@@ -62,6 +67,15 @@ export default function MealCard({ meal, highlightText }) {
                     )}
                     <FavoriteButton meal={meal} className="bg-gray-800 bg-opacity-70" />
                 </div>
+                
+                {/* Category badge */}
+                {meal.strCategory && (
+                    <div className="absolute bottom-2 left-2">
+                        <span className="px-2 py-1 bg-indigo-600 bg-opacity-80 text-white text-xs rounded-full">
+                            {meal.strCategory}
+                        </span>
+                    </div>
+                )}
             </div>
             <div className="p-4">
                 <h2 className="text-2xl font-bold text-white">
@@ -72,6 +86,10 @@ export default function MealCard({ meal, highlightText }) {
                         ? `${meal.strInstructions.slice(0, CHARACTER_LIMIT)}${meal.strInstructions.length > CHARACTER_LIMIT ? '...' : ''}`
                         : "No instructions available."}
                 </p>
+                
+                <div className={`mt-4 text-indigo-400 font-medium opacity-0 transform translate-y-4 transition-all duration-300 ${isHovered ? 'opacity-100 translate-y-0' : ''}`}>
+                    Click to view recipe
+                </div>
             </div>
         </div>
     );

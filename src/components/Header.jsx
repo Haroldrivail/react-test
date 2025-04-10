@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useFavorites } from '../contexts/FavoritesContext';
 
@@ -7,7 +7,21 @@ export default function Header() {
   const { user, isAuthenticated, logout } = useAuth();
   const { hasFavorites } = useFavorites();
   const navigate = useNavigate();
+  const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [activeMenu, setActiveMenu] = useState('');
+  const [animateFavoriteIcon, setAnimateFavoriteIcon] = useState(false);
+  
+  // Set active menu based on current location
+  useEffect(() => {
+    const path = location.pathname;
+    if (path === '/') setActiveMenu('home');
+    else if (path.startsWith('/categories')) setActiveMenu('categories');
+    else if (path.startsWith('/cuisines')) setActiveMenu('cuisines');
+    else if (path.startsWith('/ingredients')) setActiveMenu('ingredients');
+    else if (path.startsWith('/favorites')) setActiveMenu('favorites');
+    else if (path.startsWith('/login')) setActiveMenu('login');
+  }, [location.pathname]);
   
   // Close menu when clicking outside or when route changes
   useEffect(() => {
@@ -32,6 +46,15 @@ export default function Header() {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [menuOpen]);
+
+  // Animate the favorites icon when new favorites are added
+  useEffect(() => {
+    if (hasFavorites) {
+      setAnimateFavoriteIcon(true);
+      const timer = setTimeout(() => setAnimateFavoriteIcon(false), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [hasFavorites]);
   
   // Prevent scrolling when mobile menu is open
   useEffect(() => {
@@ -54,7 +77,10 @@ export default function Header() {
   
   return (
     <nav className="py-3 px-4 md:px-6 bg-gray-800 flex items-center justify-between text-white shadow-md relative z-20">
-      <Link to="/" className="text-2xl font-semibold">MealSearch</Link>
+      <Link to="/" className="text-2xl font-semibold flex items-center">
+        <span className="text-indigo-400 mr-1">Meal</span>
+        <span>Search</span>
+      </Link>
       
       {/* Mobile menu button */}
       <button 
@@ -94,45 +120,57 @@ export default function Header() {
             to="/" 
             className={({isActive}) => 
               isActive 
-                ? 'text-indigo-400 py-3 px-4 border-b border-gray-700 md:border-none'
+                ? 'text-indigo-400 py-3 px-4 border-b border-gray-700 md:border-none relative'
                 : 'text-white hover:bg-gray-700 py-3 px-4 border-b border-gray-700 md:border-none md:hover:bg-transparent md:hover:text-indigo-400 transition-colors'
             }
             onClick={() => setMenuOpen(false)} 
           >
             Home
+            {activeMenu === 'home' && (
+              <span className="hidden md:block absolute bottom-0 left-0 right-0 h-0.5 bg-indigo-400 transform origin-left animate-growFromLeft" />
+            )}
           </NavLink>
           <NavLink 
             to="/categories" 
             className={({isActive}) => 
               isActive 
-                ? 'text-indigo-400 py-3 px-4 border-b border-gray-700 md:border-none'
+                ? 'text-indigo-400 py-3 px-4 border-b border-gray-700 md:border-none relative'
                 : 'text-white hover:bg-gray-700 py-3 px-4 border-b border-gray-700 md:border-none md:hover:bg-transparent md:hover:text-indigo-400 transition-colors'
-            } 
+            }
             onClick={() => setMenuOpen(false)}
           >
             Categories
+            {activeMenu === 'categories' && (
+              <span className="hidden md:block absolute bottom-0 left-0 right-0 h-0.5 bg-indigo-400 transform origin-left animate-growFromLeft" />
+            )}
           </NavLink>
           <NavLink 
             to="/cuisines" 
             className={({isActive}) => 
               isActive 
-                ? 'text-indigo-400 py-3 px-4 border-b border-gray-700 md:border-none'
+                ? 'text-indigo-400 py-3 px-4 border-b border-gray-700 md:border-none relative'
                 : 'text-white hover:bg-gray-700 py-3 px-4 border-b border-gray-700 md:border-none md:hover:bg-transparent md:hover:text-indigo-400 transition-colors'
-            } 
+            }
             onClick={() => setMenuOpen(false)}
           >
             Cuisines
+            {activeMenu === 'cuisines' && (
+              <span className="hidden md:block absolute bottom-0 left-0 right-0 h-0.5 bg-indigo-400 transform origin-left animate-growFromLeft" />
+            )}
           </NavLink>
           <NavLink 
             to="/ingredients" 
             className={({isActive}) => 
               isActive 
-                ? 'text-indigo-400 py-3 px-4 border-b border-gray-700 md:border-none'
+                ? 'text-indigo-400 py-3 px-4 border-b border-gray-700 md:border-none relative'
                 : 'text-white hover:bg-gray-700 py-3 px-4 border-b border-gray-700 md:border-none md:hover:bg-transparent md:hover:text-indigo-400 transition-colors'
-            } 
+            }
             onClick={() => setMenuOpen(false)}
           >
             Ingredients
+            {activeMenu === 'ingredients' && (
+              <span className="hidden md:block absolute bottom-0 left-0 right-0 h-0.5 bg-indigo-400 transform origin-left animate-growFromLeft" />
+            )}
           </NavLink>
         </div>
         
@@ -141,20 +179,26 @@ export default function Header() {
             <>
               <NavLink 
                 to="/favorites" 
-                className={({isActive}) => 
-                  `flex items-center justify-between py-3 px-4 ${
+                className={({isActive}) => {
+                  return `flex items-center justify-between py-3 px-4 ${
                     isActive 
-                      ? 'text-indigo-400' 
+                      ? 'text-indigo-400 relative' 
                       : 'text-white hover:bg-gray-700 md:hover:bg-transparent md:hover:text-indigo-400'
-                  } ${!menuOpen && 'md:px-3 md:py-1'} transition-colors`
-                }
+                  } ${!menuOpen && 'md:px-3 md:py-1'} transition-colors`;
+                }}
                 onClick={() => setMenuOpen(false)}
               >
                 <span>Favorites</span>
                 {hasFavorites && (
-                  <svg className="w-5 h-5 text-red-500 fill-current ml-1" viewBox="0 0 24 24">
+                  <svg 
+                    className={`w-5 h-5 text-red-500 fill-current ml-1 ${animateFavoriteIcon ? 'animate-heartbeat' : ''}`} 
+                    viewBox="0 0 24 24"
+                  >
                     <path d="M12,21.35L10.55,20.03C5.4,15.36 2,12.27 2,8.5C2,5.41 4.42,3 7.5,3C9.24,3 10.91,3.81 12,5.08C13.09,3.81 14.76,3 16.5,3C19.58,3 22,5.41 22,8.5C22,12.27 18.6,15.36 13.45,20.03L12,21.35Z" />
                   </svg>
+                )}
+                {activeMenu === 'favorites' && (
+                  <span className="hidden md:block absolute bottom-0 left-0 right-0 h-0.5 bg-indigo-400 transform origin-left animate-growFromLeft" />
                 )}
               </NavLink>
               
@@ -162,7 +206,7 @@ export default function Header() {
                 <span className="text-gray-300 mr-2">Hi, {user.name}</span>
                 <button 
                   onClick={handleLogout}
-                  className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
+                  className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition-all duration-200 transform hover:scale-105 active:scale-95 cursor-pointer"
                 >
                   Logout
                 </button>
@@ -173,12 +217,15 @@ export default function Header() {
               to="/login"
               className={({isActive}) => 
                 isActive 
-                  ? 'block py-3 px-4 text-center bg-indigo-600 text-white md:px-3 md:py-1 md:rounded' 
-                  : 'block py-3 px-4 text-center bg-indigo-500 hover:bg-indigo-600 text-white md:px-3 md:py-1 md:rounded transition-colors'
+                  ? 'block py-3 px-4 text-center bg-indigo-600 text-white md:px-3 md:py-1 md:rounded relative' 
+                  : 'block py-3 px-4 text-center bg-indigo-500 hover:bg-indigo-600 text-white md:px-3 md:py-1 md:rounded transition-all duration-200 transform hover:scale-105 active:scale-95'
               }
               onClick={() => setMenuOpen(false)}
             >
               Login
+              {activeMenu === 'login' && (
+                <span className="hidden md:block absolute bottom-0 left-0 right-0 h-0.5 bg-white transform origin-left animate-growFromLeft" />
+              )}
             </NavLink>
           )}
         </div>

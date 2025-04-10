@@ -4,6 +4,8 @@ import MainLayout from '../layouts/MainLayout';
 import SkeletonLoader from '../components/SkeletonLoader';
 import { fetchWithCache } from '../utils/api';
 import FavoriteButton from '../components/FavoriteButton';
+import { useAuth } from '../contexts/AuthContext';
+import { useToast } from '../contexts/ToastContext';
 
 // Access the API base URL from environment variables
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
@@ -58,6 +60,8 @@ export default function MealDetails() {
     const [meal, setMeal] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
+    const { user } = useAuth();
+    const toast = useToast();
 
     useEffect(() => {
         const fetchMealDetails = async () => {

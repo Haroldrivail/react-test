@@ -30,12 +30,30 @@ export default function Home() {
         throw new Error("API base URL is not defined. Check your .env configuration.");
       }
       
-      const promises = Array(count).fill().map(() => 
-        fetchWithCache(`${apiBaseUrl}/random.php`)
-          .then(data => data.meals[0])
-      );
+      const mealPromises = [];
+      const uniqueIds = new Set();
       
-      const randomMeals = await Promise.all(promises);
+      // Create unique meal promises to avoid duplicate meals
+      for (let i = 0; i < count; i++) {
+        const fetchMeal = async () => {
+          // Add forceRefresh parameter to prevent caching for random meals
+          const data = await fetchWithCache(`${apiBaseUrl}/random.php`, true);
+          const meal = data.meals[0];
+          
+          // Ensure we don't add duplicate meals
+          if (uniqueIds.has(meal.idMeal)) {
+            // Try again to get a unique meal
+            return fetchMeal();
+          }
+          
+          uniqueIds.add(meal.idMeal);
+          return meal;
+        };
+        
+        mealPromises.push(fetchMeal());
+      }
+      
+      const randomMeals = await Promise.all(mealPromises);
       const endTime = performance.now();
       setApiCallInfo({
         lastCall: `Fetched ${count} random meals`,

@@ -1,10 +1,12 @@
 import { createContext, useState, useContext, useEffect } from 'react';
+import { useToast } from './ToastContext';
 
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const toast = useToast();
   
   // Check for existing user in localStorage on app initialization
   useEffect(() => {
@@ -37,10 +39,13 @@ export function AuthProvider({ children }) {
   
   // Logout function
   const logout = () => {
+    if (user) {
+      toast.info(`Goodbye, ${user.name}!`, 2000);
+    }
     setUser(null);
     localStorage.removeItem('user');
   };
-  
+
   // Value to be provided by the context
   const value = {
     user,

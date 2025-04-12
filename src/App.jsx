@@ -15,7 +15,6 @@ import CategoryMeals from './views/CategoryMeals';
 import Areas from './views/Areas';
 import AreaMeals from './views/AreaMeals';
 import Favorites from './views/Favorites';
-import { LanguageProvider } from './contexts/LanguageContext';
 
 function App() {
   return (

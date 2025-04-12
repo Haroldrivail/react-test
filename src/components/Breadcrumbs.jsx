@@ -1,9 +1,8 @@
 import React from 'react';
-import { Link, useLocation, useParams } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 export default function Breadcrumbs() {
   const location = useLocation();
-  const params = useParams();
   
   // Don't show breadcrumbs on the homepage
   if (location.pathname === '/') {

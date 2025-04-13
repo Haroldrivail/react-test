@@ -15,6 +15,9 @@ import CategoryMeals from './views/CategoryMeals';
 import Areas from './views/Areas';
 import AreaMeals from './views/AreaMeals';
 import Favorites from './views/Favorites';
+import Sitemap from './views/Sitemap';
+import PrivacyPolicy from './views/PrivacyPolicy';
+import TermsOfService from './views/TermsOfService';
 
 function App() {
   return (
@@ -48,6 +51,9 @@ function App() {
                         </ProtectedRoute>
                       }
                     />
+                    <Route path="/sitemap" element={<Sitemap/>}/>
+                    <Route path="/privacy-policy" element={<PrivacyPolicy/>}/>
+                    <Route path="/terms-of-service" element={<TermsOfService/>}/>
                   </Routes>
                 </main>
               </div>

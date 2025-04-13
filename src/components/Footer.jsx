@@ -140,9 +140,9 @@ export default function Footer() {
               &copy; {currentYear} MealSearch. All rights reserved. Data provided by TheMealDB.
             </p>
             <div className="flex items-center space-x-4">
-              <Link to="/" className="text-gray-400 hover:text-indigo-400 text-sm transition-colors">Privacy Policy</Link>
-              <Link to="/" className="text-gray-400 hover:text-indigo-400 text-sm transition-colors">Terms of Service</Link>
-              <Link to="/" className="text-gray-400 hover:text-indigo-400 text-sm transition-colors">Sitemap</Link>
+              <Link to="/privacy-policy" className="text-gray-400 hover:text-indigo-400 text-sm transition-colors">Privacy Policy</Link>
+              <Link to="/terms-of-service" className="text-gray-400 hover:text-indigo-400 text-sm transition-colors">Terms of Service</Link>
+              <Link to="/sitemap" className="text-gray-400 hover:text-indigo-400 text-sm transition-colors">Sitemap</Link>
             </div>
           </div>
           <div className="mt-4 text-center text-gray-500 text-xs">

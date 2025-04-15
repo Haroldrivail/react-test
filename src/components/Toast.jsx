@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { TOAST_TYPES } from '../contexts/ToastContext';
-import { useNavigate } from 'react-router-dom';
 
 export default function Toast({ toast, onRemove }) {
   const [isExiting, setIsExiting] = useState(false);
-  const navigate = useNavigate();
   
   // Handle the animation before removing
   useEffect(() => {

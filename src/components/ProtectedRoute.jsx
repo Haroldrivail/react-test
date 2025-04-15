@@ -2,7 +2,6 @@ import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import LoadingIndicator from './LoadingIndicator';
 // Removed useToast import since we don't need it anymore
-import { useRef } from 'react';
 
 export default function ProtectedRoute({ children, requiresAuth = true }) {
   const { user, isLoading } = useAuth();
